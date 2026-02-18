@@ -1,9 +1,16 @@
-import React from 'react'
+import React from 'react';
 
-const Protectedroute = () => {
-  return (
-    <div>Protectedroute</div>
-  )
+import { Navigate } from 'react-router-dom';
+
+const Protectedroute = ({children}) => {
+
+  const islogin = localStorage.getItem("islogin");
+  if(islogin === "true") {
+    return children;
+  }
+
+  return <Navigate to="/login" />;
 }
 
-export default Protectedroute
+
+export default Protectedroute;

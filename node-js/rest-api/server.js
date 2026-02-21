@@ -1,27 +1,32 @@
-//reastapi server+routing+queryfilter
+const express = require('express');
+const app = express();
 
-const http = require('http');
-const { URL } = require('url');
+app.use(express.json());
 
-const products = [
-    { id: 1, name: "laptop", price: 78000 },
-    { id: 2, name: "mobile", price: 7800 },
-    { id: 3, name: "tab", price: 780000 },
+app.get('/',(req,res)=>{
+   res.send("server create done");
+});
+app.get('/about',(req,res)=>{
+   res.json({
+    name:"virat",
+    role:"cricketer"
+   });
+});
+//hwt handel route parameter
 
-];
-http.createServer((req,res)=>{
-    const fullurl = new URL(req.url,`http://${req.headers.host}`);
-    const path = fullurl.pathname;
+app.get('/contact/:id',(req,res)=>{
+   res.send("contact id:"+ req.params.id);
+});
+//hwt handel query parameters
+app.get('/search',(req,res)=>{
+   res.send("search:"+ req.query.q);
+});
+//data add
+app.post('/register',(req,res)=>{
+   console.log(req.body);
+   res.send("user register");
+});
 
-    if(path ==="/api/products" && req.method ==="GET") {
-        const search = (fullurl.searchParams.get("search")|| "").toLowerCase();
-        const filtered = products.filter(x=>x.name.toLowerCase().includes(search));
-        res.writeHead(200,{"Content-Type":"application/json"});
-        return  res.end(JSON.stringify(filtered));
-    } else {
-        res.writeHead(404,{"Content-Type":"text/plain"});
-        res.end("not found");
-    }
-}).listen(5800,()=>{
-    console.log("server is running port 5800");
+app.listen(5500,()=>{
+    console.log("server is running port 5500");
 })

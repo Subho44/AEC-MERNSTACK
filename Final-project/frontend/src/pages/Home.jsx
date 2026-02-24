@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+
 import api from "../api/api";
 import JobForm from "../components/Jobform";
 import JobCard from "../components/Jobcard";
@@ -97,7 +97,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      
 
       <div className="mx-auto max-w-6xl px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT: FORM */}

@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectdb = require('./config/db');
 const jobrouter = require("./routes/jobRoutes");
+const userrouter = require("./routes/userRoutes");
 dotenv.config();
 const app = express();
 connectdb();
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/uploads",express.static("upload"));
 app.use("/api/jobs",jobrouter);
+app.use("/api/auth",userrouter);
 app.get('/',(req,res)=>{
     res.send("api is working");
 });

@@ -95,9 +95,94 @@ export default function Home() {
   // ✅ Cancel edit
   const cancelEdit = () => setSelectedJob(null);
 
+  //payment handel function
+
+    const hsp = async (job) => {
+    try {
+      setMsg("");
+
+      // ✅ Razorpay script loaded?
+      if (!window.Razorpay) {
+        setMsg("❌ Razorpay SDK not loaded. Add checkout.js in index.html");
+        return;
+      }
+
+      const amount = 19900; // ₹199
+
+      // ✅ create order
+      const res = await api.post("/api/payments/create-order", {
+        amount,
+        jobId: job._id,
+      });
+
+      if (!res.data?.success) {
+        setMsg("❌ Order create failed");
+        console.log("create-order:", res.data);
+        return;
+      }
+
+      const { key, order } = res.data;
+
+      const options = {
+        key,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Job Web Subscription",
+        description: `Subscribe for: ${job.title}`,
+        order_id: order.id,
+
+        handler: async (response) => {
+          try {
+            const verifyres = await api.post("/api/payments/verify", {
+              jobId: job._id,
+              amount,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verifyres.data?.success) {
+              setMsg("✅ Subscribe success! Payment verified.");
+            } else {
+              setMsg("❌ Payment not verified");
+              console.log("verify response:", verifyres.data);
+            }
+          } catch (err) {
+            setMsg(err?.response?.data?.message || "❌ Verify API error");
+            console.error("verify error:", err);
+          }
+        },
+
+        prefill: {
+          name: "Subhojit Santra",
+          email: "s@gmail.com",
+          contact: "6289619338",
+        },
+
+        theme: { color: "#111827" }, // ✅ hex better
+
+        modal: {
+          ondismiss: () => setMsg("⚠️ Payment popup closed"),
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+
+      rzp.on("payment.failed", function (resp) {
+        setMsg("❌ Payment failed");
+        console.error("payment failed:", resp?.error);
+      });
+
+      rzp.open();
+    } catch (err) {
+      setMsg(err?.response?.data?.message || "❌ Subscribe error");
+      console.error(err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      
+
 
       <div className="mx-auto max-w-6xl px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT: FORM */}
@@ -147,7 +232,9 @@ export default function Home() {
                   key={job._id}
                   job={job}
                   onEdit={handleEdit}
-                  onDelete={handleDelete}
+                  onDelete={handleDelete}   
+                  onSubscribe={hsp}
+                
                 />
               ))}
             </div>

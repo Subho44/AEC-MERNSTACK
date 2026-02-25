@@ -1,7 +1,7 @@
 import React from "react";
 import { imageUrl } from "../api/api";
 
-export default function JobCard({ job, onEdit, onDelete }) {
+export default function JobCard({ job, onEdit, onDelete,onSubscribe }) {
   return (
     <div className="rounded-2xl border bg-white shadow-sm hover:shadow-md transition overflow-hidden">
       <div className="p-4 flex gap-4">
@@ -64,6 +64,13 @@ export default function JobCard({ job, onEdit, onDelete }) {
               className="px-3 py-2 rounded-xl border text-sm text-red-600 hover:bg-red-50"
             >
               🗑️ Delete
+            </button>
+            <button
+              type="button"
+              onClick={() => onSubscribe(job)}
+              className="px-3 py-2 rounded-xl border text-sm text-red-600 hover:bg-red-50"
+            >
+             Subscribe $199
             </button>
           </div>
         </div>

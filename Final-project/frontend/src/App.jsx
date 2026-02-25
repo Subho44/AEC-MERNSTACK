@@ -7,10 +7,12 @@ import PrivateRoute from './utils/PrivateRoute';
 import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
+
 const App = () => {
   return <>
   <BrowserRouter>
   <Navbar/>
+  
   <Routes>
     <Route path='/' element={<Register/>}></Route>
     <Route path='/login' element={<Login/>}></Route>
